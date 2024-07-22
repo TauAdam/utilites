@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Daily utilities</title>
+</head>
+
+<body>
+	<h1>Speech Synthesis</h1>
+
+	<form>
+		<label for="text">Enter text to speak</label>
+		<textarea name="text" id="text" cols="30" rows="10"></textarea>
+		<button type="submit" class="button">Speak</button>
+	</form>
+	<script defer>
+
+		const form= document.querySelector('form')
+
+		const button = document.querySelector('.button')
+		form.onsubmit = (e) => {
+			e.preventDefault()
+
+			const speechUtterance = new SpeechSynthesisUtterance()
+
+			speechUtterance.text = document.getElementById('text').value
+
+			speechUtterance.onstart = () => {
+				console.log('Speech has started')
+			}
+			speechUtterance.onend = () => {
+				console.log('Speech has finished')
+			}
+			speechSynthesis.speak(speechUtterance)
+		}
+
+	</script>
+</body>
+
+</html>
