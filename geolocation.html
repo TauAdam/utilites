@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Geolocation Example</title>
+	<script>
+		async function getLocation() {
+			if (navigator.geolocation) {
+				navigator.geolocation.getCurrentPosition(showPosition, showError);
+			} else {
+				alert("Geolocation is not supported by this browser.");
+			}
+		}
+
+		async function showPosition(position) {
+			var latitude = position.coords.latitude;
+			var longitude = position.coords.longitude;
+			var accuracy = position.coords.accuracy;
+
+			document.getElementById("latitude").textContent = "Latitude: " + latitude;
+			document.getElementById("longitude").textContent = "Longitude: " + longitude;
+			document.getElementById("accuracy").textContent = "Accuracy: " + accuracy + " meters";
+
+			const url = `https://freeipapi.com/api/json`
+
+			try {
+				const response = await fetch(url);
+				const data = await response.json();
+				document.getElementById("city").textContent = "Country: " + data.countryName;
+				document.getElementById("city").textContent = "City: " + data.cityName;
+			} catch (error) {
+				console.error('Error:', error);
+				document.getElementById("city").textContent = "City: Error retrieving city";
+			}
+		}
+
+		function showError(error) {
+			switch(error.code) {
+				case error.PERMISSION_DENIED:
+					alert("User denied the request for Geolocation.");
+					break;
+				case error.POSITION_UNAVAILABLE:
+					alert("Location information is unavailable.");
+					break;
+				case error.TIMEOUT:
+					alert("The request to get user location timed out.");
+					break;
+				case error.UNKNOWN_ERROR:
+					alert("An unknown error occurred.");
+					break;
+			}
+		}
+	</script>
+</head>
+<body>
+	<h1>Geolocation Example</h1>
+	<button onclick="getLocation()">Get Location</button>
+	<p id="latitude"></p>
+	<p id="longitude"></p>
+	<p id="accuracy"></p>
+	<p id="country"></p>
+	<p id="city"></p>
+</body>
+</html>
