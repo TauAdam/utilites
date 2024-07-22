@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Navigation Network API Example</title>
+</head>
+
+<body>
+	<h1>Navigation Network API Example</h1>
+
+	<div id="networkType"></div>
+	<strong>Network Type:</strong> <output id="networkTypeValue"></output>
+	</div>
+	<div id="rtt">
+		<strong>Round-Trip Time (RTT):</strong> <output id="rttValue"></output> ms
+	</div>
+	<div id="downlink">
+		<strong>Downlink Speed:</strong> <output id="downlinkValue"></output> Mbps
+	</div>
+	</div>
+
+	<script>
+
+		if ('navigator' in window && 'connection' in navigator) {
+			const connection = navigator.connection
+
+
+			const networkType = connection.effectiveType
+			document.getElementById('networkTypeValue').textContent = networkType
+
+
+			const rtt = connection.rtt
+			document.getElementById('rttValue').textContent = `${rtt} ms`
+
+
+			const downlink = connection.downlink
+			document.getElementById('downlinkValue').textContent = `Downlink Speed: ${downlink} Mbps`
+		} else {
+			alert('Navigation Network API is not supported by this browser.')
+		}
+	</script>
+</body>
+
+</html>
