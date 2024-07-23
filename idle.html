@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Idle Detection</title>
+</head>
+
+<body>
+	<main>
+		<h3>Idle Detection</h3>
+		<button id="startButton">Start</button>
+		<button id="stopButton">Stop</button>
+
+		<p>Open the console to see the idle state changes.</p>
+	</main>
+	<script>
+		askPermissions()
+
+		const controller = new AbortController()
+		const signal = controller.signal
+
+		const startButton = document.getElementById("startButton")
+		const stopButton = document.getElementById("stopButton")
+
+		startButton.addEventListener("click", async () => {
+			if ((await IdleDetector.requestPermission()) !== "granted") {
+				new Notification("Idle detection permission denied.")
+				return
+			}
+
+			try {
+				const idleDetector = new IdleDetector()
+				idleDetector.addEventListener("change", () => {
+					const userState = idleDetector.userState
+					const screenState = idleDetector.screenState
+					new Notification(`Idle change: ${userState}, ${screenState}.`)
+				})
+
+				await idleDetector.start({
+					threshold: 60,
+					signal,
+				})
+				new Notification("IdleDetector is active.")
+			} catch (err) {
+				console.error(err.name, err.message)
+				alert("Idle detection failed.")
+			}
+		})
+
+		stopButton.addEventListener("click", () => {
+			controller.abort()
+			new Notification("IdleDetector is stopped.")
+		})
+
+		async function askPermissions() {
+			if (!("Notification" in window)) {
+				console.error("This browser does not support notifications.")
+				return
+			}
+			Notification.requestPermission().then((permission) => {
+				if (permission === "granted") {
+					console.log("Notification permission granted.")
+					return
+				}
+				console.error("Notification permission denied.")
+				return
+			})
+		}
+
+	</script>
+</body>
+
+</html>
